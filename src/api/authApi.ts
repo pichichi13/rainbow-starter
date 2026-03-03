@@ -20,6 +20,7 @@ export type LoginPayload = {
 };*/
 
 //Modificata la funzione, così ora quando fai login: Il token viene salvato e Ogni richiesta usa automaticamente Authorization header -> Punto 9 della documentazione
+//LOGIN
 export const loginApi = async (data: LoginPayload) => {
   const response = await api.post("/api/login", data);
 
@@ -34,6 +35,19 @@ export const meApi = async () => {
   const response = await api.get("/api/me");
   return response.data;
 };
+
+
+//CREATE NEW USER
+export const registerApi = async (data: LoginPayload) => {
+  const response = await api.post("/api/register", data);
+
+  console.log("LOGIN RESPONSE:", response.data);
+
+  localStorage.setItem("token", response.data.token);
+
+  return response.data;
+};
+
 
 /*export const loginApi = async (data: LoginPayload) => {
   //modificata chiamata perchè dava errore CORS

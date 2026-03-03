@@ -7,6 +7,7 @@ import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 
 import { useState } from "react"; //Punto 7 della documentazione
+import { Link } from "react-router-dom";
 
 {
   /*
@@ -54,6 +55,8 @@ export default function LoginPage() {
   };
 
   return (
+
+    <>
     <div>
       <h1>Login</h1>
 
@@ -78,5 +81,11 @@ export default function LoginPage() {
         <p style={{ color: "red" }}>{(mutation.error as Error).message}</p>
       )}
     </div>
+
+    <div style={{margin:"2rem 0 0 0"}}>
+       <p style={{color:"green"}}><Link to="/newUserPage" className="hover:text-yellow-300">Crea un nuovo utente</Link></p> 
+    </div>
+    </>  
+
   );
 }

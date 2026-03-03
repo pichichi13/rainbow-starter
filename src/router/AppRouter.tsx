@@ -7,6 +7,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import LoginPage from "../pages/LoginPage";
 import DashboardPage from "../pages/DashboardPage";
 import UsersPage from "../pages/UsersPage";
+import NewUserPage from "../pages/NewUserPage";
 
 import { JSX } from "react";
 
@@ -31,6 +32,7 @@ export default function AppRouter() {
         {/* Layout pubblico */}
         <Route element={<PublicLayout />}>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/newUserPage" element={<NewUserPage />} />
         </Route>
 
         {/* Layout privato */}
