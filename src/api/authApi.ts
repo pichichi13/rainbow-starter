@@ -23,8 +23,15 @@ export type LoginPayload = {
 export const loginApi = async (data: LoginPayload) => {
   const response = await api.post("/api/login", data);
 
+  console.log("LOGIN RESPONSE:", response.data);
+
   localStorage.setItem("token", response.data.token);
 
+  return response.data;
+};
+
+export const meApi = async () => {
+  const response = await api.get("/api/me");
   return response.data;
 };
 

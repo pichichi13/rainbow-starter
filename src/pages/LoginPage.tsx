@@ -2,13 +2,14 @@
 import { useMutation } from "@tanstack/react-query";
 import { loginApi } from "../api/authApi";
 
-//Da riga 6 a riga 18 codice aggiunto dopo aver installato zustand e aver creato il file src/store/authStore.ts -> Punto 4 della documentazione 
+//Da riga 6 a riga 18 codice aggiunto dopo aver installato zustand e aver creato il file src/store/authStore.ts -> Punto 4 della documentazione
 import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 
 import { useState } from "react"; //Punto 7 della documentazione
 
-{/*
+{
+  /*
 export default function LoginPage() {
   const login = useAuthStore((state) => state.login);
   const navigate = useNavigate();
@@ -29,8 +30,8 @@ export default function LoginPage() {
     </div>
   );
 }
-*/}
-
+*/
+}
 
 //L'intera function viene adattata dopo aver creato la logica API per la login che restituisce il token
 export default function LoginPage() {
@@ -74,9 +75,7 @@ export default function LoginPage() {
       </button>
 
       {mutation.isError && (
-        <p style={{ color: "red" }}>
-          {(mutation.error as Error).message}
-        </p>
+        <p style={{ color: "red" }}>{(mutation.error as Error).message}</p>
       )}
     </div>
   );
