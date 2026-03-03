@@ -12,7 +12,7 @@ export interface AuthRequest extends Request {
 const authMiddleware = (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const authHeader = req.headers.authorization;
 
@@ -25,7 +25,7 @@ const authMiddleware = (
   try {
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET as string
+      process.env.JWT_SECRET as string,
     ) as JwtPayload;
 
     req.user = decoded;

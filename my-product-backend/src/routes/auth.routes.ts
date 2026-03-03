@@ -4,17 +4,13 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
 
-
 const router = Router();
-
 
 router.post("/login", async (req, res) => {
   try {
-    
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-
 
     if (!user) {
       return res.status(400).json({ message: "User not found" });
@@ -26,17 +22,14 @@ router.post("/login", async (req, res) => {
     }*/
 
     //PASSWORD HASHATA!!! IL MATCH FUNZIONA!
-    const isMatch = await bcrypt.compare(password, user.password); 
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
-    
 
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET!,
-      { expiresIn: "1d" }
-    );
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
+      expiresIn: "1d",
+    });
 
     res.json({
       token,
@@ -44,16 +37,13 @@ router.post("/login", async (req, res) => {
         id: user._id,
         email: user.email,
       },
-    });    
+    });
     //res.json({ message: "Login successful" });
-
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 });
-
 
 router.get("/me", authMiddleware, async (req: AuthRequest, res) => {
   try {
@@ -70,8 +60,6 @@ router.get("/me", authMiddleware, async (req: AuthRequest, res) => {
     res.status(500).json({ message: "Errore server" });
   }
 });
-
-
 
 router.post("/register", async (req: Request, res: Response) => {
   try {
@@ -90,25 +78,22 @@ router.post("/register", async (req: Request, res: Response) => {
     });
 
     res.status(201).json({ message: "Utente creato" });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Errore server" });
   }
 });
 
-
 router.post("/seed", async (req, res) => {
   const hashedPassword = await bcrypt.hash("123456", 10);
 
   const user = await User.create({
     email: "dona@test.com",
-    password: hashedPassword
+    password: hashedPassword,
   });
 
   res.json(user);
 });
-
 
 export default router;
 
