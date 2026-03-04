@@ -4,43 +4,33 @@ import { loginApi } from "../api/authApi";
 
 //Da riga 6 a riga 18 codice aggiunto dopo aver installato zustand e aver creato il file src/store/authStore.ts -> Punto 4 della documentazione
 import { useAuthStore } from "../store/authStore";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 
 import { useState } from "react"; //Punto 7 della documentazione
 import { Link } from "react-router-dom";
 
-{
-  /*
-export default function LoginPage() {
-  const login = useAuthStore((state) => state.login);
-  const navigate = useNavigate();
+import { useForm } from "react-hook-form";
 
-  function handleLogin() {
-    login();                 // set isAuthenticated = true
-    navigate("/dashboard");  // vai alla dashboard
-  }
-  return (
-    <div className="bg-white p-6 rounded shadow">
-      <h1 className="text-2xl font-bold mb-4">Login</h1>
-      <input className="w-full p-2 mb-3 border rounded" placeholder="Email" />
-      <input className="w-full p-2 mb-3 border rounded" placeholder="Password" type="password" />
-      //Aggiunto evento onClick={handleLogin} dopo aver installato zustand e aver creato il file src/store/authStore.ts -> Punto 4 della documentazione
-      <button className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700" onClick={handleLogin}>
-        Login
-      </button>
-    </div>
-  );
-}
-*/
-}
+type LoginPayload = {
+  email: string;
+  password: string;
+};
 
 //L'intera function viene adattata dopo aver creato la logica API per la login che restituisce il token
 export default function LoginPage() {
+  //Se sono loggata va direttamente alla dashboard
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const hasHydrated = useAuthStore.persist.hasHydrated();
   const navigate = useNavigate();
   const loginStore = useAuthStore((state) => state.login);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginPayload>();
 
   const mutation = useMutation({
     mutationFn: loginApi,
@@ -50,42 +40,92 @@ export default function LoginPage() {
     },
   });
 
-  const handleSubmit = () => {
-    mutation.mutate({ email, password });
+  const onSubmit = (data: LoginPayload) => {
+    mutation.mutate(data);
   };
 
+  //Redirect alla dashboard se sono già loggato
+  if (!hasHydrated) return null;
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   return (
-
     <>
-    <div>
-      <h1>Login</h1>
+      <div>
+        <h1>Login</h1>
 
-      <input
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* EMAIL */}
+          <div>
+            <input
+              type="email"
+              placeholder="Email"
+              className="w-full p-2 border rounded"
+              {...register("email", {
+                required: "Email obbligatoria",
+                pattern: {
+                  value: /^\S+@\S+$/i,
+                  message: "Formato email non valido",
+                },
+              })}
+            />
 
-      <input
-        placeholder="Password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
 
-      <button onClick={handleSubmit} disabled={mutation.isPending}>
-        {mutation.isPending ? "Loading..." : "Login"}
-      </button>
+          {/* PASSWORD */}
+          <div>
+            <input
+              type="password"
+              placeholder="Password"
+              className="w-full p-2 border rounded"
+              {...register("password", {
+                required: "Password obbligatoria",
+                minLength: {
+                  value: 4,
+                  message: "Minimo 4 caratteri",
+                },
+              })}
+            />
 
-      {mutation.isError && (
-        <p style={{ color: "red" }}>{(mutation.error as Error).message}</p>
-      )}
-    </div>
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
 
-    <div style={{margin:"2rem 0 0 0"}}>
-       <p style={{color:"green"}}><Link to="/newUserPage" className="hover:text-yellow-300">Crea un nuovo utente</Link></p> 
-    </div>
-    </>  
+          {/* BUTTON */}
+          <button
+            type="submit"
+            disabled={mutation.isPending}
+            className="w-full bg-blue-600 text-white p-2 rounded"
+          >
+            {mutation.isPending ? "Loading..." : "Login"}
+          </button>
 
+          {/* ERRORE SERVER */}
+          {mutation.isError && (
+            <p className="text-red-500 text-sm mt-2">
+              {(mutation.error as any)?.response?.data?.message ||
+                "Credenziali non valide"}
+            </p>
+          )}
+        </form>
+      </div>
+
+      <div style={{ margin: "2rem 0 0 0" }}>
+        <p style={{ color: "green" }}>
+          <Link to="/newUserPage" className="hover:text-yellow-300">
+            Crea un nuovo utente
+          </Link>
+        </p>
+      </div>
+    </>
   );
 }

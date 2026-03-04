@@ -1,3 +1,4 @@
+import { useAuthStore } from "../store/authStore";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import PublicLayout from "../layouts/PublicLayout";
 import PrivateLayout from "../layouts/PrivateLayout";
@@ -25,10 +26,25 @@ import { JSX } from "react";
   return isAuthenticated ? children : <Navigate to="/login" replace />;  
 }*/
 
+function HomeRedirect() {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const hasHydrated = useAuthStore.persist.hasHydrated();
+
+  if (!hasHydrated) return null;
+
+  return isAuthenticated ? (
+    <Navigate to="/dashboard" replace />
+  ) : (
+    <Navigate to="/login" replace />
+  );
+}
+
 export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Route intelligente iniziale */}
+        <Route path="/" element={<HomeRedirect />} />
         {/* Layout pubblico */}
         <Route element={<PublicLayout />}>
           <Route path="/login" element={<LoginPage />} />

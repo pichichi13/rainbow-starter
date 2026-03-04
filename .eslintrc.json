@@ -15,11 +15,7 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
   ],
-  "ignorePatterns": [
-    "node_modules",
-    "dist",
-    "build"
-  ],
+  "ignorePatterns": ["node_modules", "dist", "build"],
   "rules": {
     "prettier/prettier": "error",
     "@typescript-eslint/no-unused-vars": "warn"

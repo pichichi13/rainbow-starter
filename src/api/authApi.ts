@@ -36,7 +36,6 @@ export const meApi = async () => {
   return response.data;
 };
 
-
 //CREATE NEW USER
 export const registerApi = async (data: LoginPayload) => {
   const response = await api.post("/api/register", data);
@@ -47,7 +46,6 @@ export const registerApi = async (data: LoginPayload) => {
 
   return response.data;
 };
-
 
 /*export const loginApi = async (data: LoginPayload) => {
   //modificata chiamata perchè dava errore CORS

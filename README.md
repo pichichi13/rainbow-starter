@@ -34,3 +34,4 @@ npm run dev
 npm run lint -> lanciare EsLint
 npm run lint:fix -> Fixare i problemi
 npm run format -> Per formattare tutto
+```
